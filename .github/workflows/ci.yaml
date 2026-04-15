@@ -1,0 +1,114 @@
+name: DevOps CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+env:
+  AWS_REGION: us-east-1
+  EKS_CLUSTER: devops-eks
+  IMAGE_NAME: my-app
+
+jobs:
+
+  #################################
+  # 1. BUILD & TEST
+  #################################
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build with Maven
+        run: mvn clean package
+
+  #################################
+  # 2. SONARQUBE SCAN
+  #################################
+  sonarqube:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: SonarQube Scan
+        run: |
+          mvn sonar:sonar \
+            -Dsonar.projectKey=my-app \
+            -Dsonar.host.url=${{ secrets.SONAR_HOST_URL }} \
+            -Dsonar.login=${{ secrets.SONAR_TOKEN }}
+
+  #################################
+  # 3. BUILD DOCKER IMAGE
+  #################################
+  docker:
+    runs-on: ubuntu-latest
+    needs: sonarqube
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Build Docker Image
+        run: |
+          docker build -t $IMAGE_NAME:${{ github.sha }} .
+
+  #################################
+  # 4. PUSH TO ARTIFACTORY
+  #################################
+  push-artifact:
+    runs-on: ubuntu-latest
+    needs: docker
+
+    steps:
+      - name: Login to Artifactory
+        run: |
+          docker login ${{ secrets.ARTIFACTORY_URL }} \
+            -u ${{ secrets.ARTIFACTORY_USER }} \
+            -p ${{ secrets.ARTIFACTORY_PASSWORD }}
+
+      - name: Tag & Push Image
+        run: |
+          docker tag $IMAGE_NAME:${{ github.sha }} \
+            ${{ secrets.ARTIFACTORY_URL }}/docker/$IMAGE_NAME:${{ github.sha }}
+
+          docker push \
+            ${{ secrets.ARTIFACTORY_URL }}/docker/$IMAGE_NAME:${{ github.sha }}
+
+  #################################
+  # 5. DEPLOY TO EKS
+  #################################
+  deploy:
+    runs-on: ubuntu-latest
+    needs: push-artifact
+
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: $AWS_REGION
+
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region $AWS_REGION \
+            --name $EKS_CLUSTER
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl set image deployment/my-app \
+          my-app=${{ secrets.ARTIFACTORY_URL }}/docker/$IMAGE_NAME:${{ github.sha }}
+
+          kubectl rollout status deployment/my-app
