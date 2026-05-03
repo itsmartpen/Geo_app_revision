@@ -57,7 +57,7 @@ jobs:
       run: |
         mvn sonar:sonar \
           -Dsonar.projectKey=my-project-key \
-          -Dsonar.host.url=http://http://ec2-13-217-15-63.compute-1.amazonaws.com:9000/ \
+          -Dsonar.host.url=http://ec2-13-217-15-63.compute-1.amazonaws.com:9000/ \
           -Dsonar.login=$SONAR_TOKEN
           
   #################################
