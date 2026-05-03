@@ -1,4 +1,4 @@
-FROM openjdk:17-jdk-slim
+FROM adoptopenjdk/openjdk11 
 ENV APP_HOME=/usr/src/app
 WORKDIR $APP_HOME
 
