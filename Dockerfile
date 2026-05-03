@@ -1,8 +1,8 @@
-FROM adoptopenjdk/openjdk11 
-
-EXPOSE 8087
-ENV APP_HOME /usr/src/app
-COPY target/*.jar $APP_HOME/app.jar
+FROM openjdk:17-jdk-slim
+ENV APP_HOME=/usr/src/app
 WORKDIR $APP_HOME
 
-CMD ["java", "-jar", "app.jar"]
+COPY target/my-app-0.0.1-SNAPSHOT.jar app.jar
+
+EXPOSE 8087
+ENTRYPOINT ["java", "-jar", "app.jar"]
