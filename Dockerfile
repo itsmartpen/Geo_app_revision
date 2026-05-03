@@ -1,8 +1,10 @@
-FROM adoptopenjdk/openjdk11 
+FROM eclipse-temurin:11-jre
 
-EXPOSE 8087
-ENV APP_HOME /usr/src/app
-COPY target/*.jar $APP_HOME/app.jar 
+ENV APP_HOME=/usr/src/app
 WORKDIR $APP_HOME
 
-CMD ["java", "-jar", "app.jar"]
+COPY target/*.jar app.jar
+
+EXPOSE 8087
+
+ENTRYPOINT ["java", "-jar", "app.jar"]
