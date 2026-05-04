@@ -81,26 +81,39 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
   #################################
-  # 4. PUSH TO ARTIFACTORY
+  # 4. PUSH TO DOCKERHUB
   #################################
-  push-artifact:
-    runs-on: ubuntu-latest
-    needs: docker
+  push_server_image :
+    name : Push Docker image to Docker Hub - server
+    runs-on : ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
 
     steps:
-      - name: Login to Artifactory
-        run: |
-          docker login ${{ secrets.ARTIFACTORY_URL }} \
-            -u ${{ secrets.ARTIFACTORY_USER }} \
-            -p ${{ secrets.ARTIFACTORY_PASSWORD }}
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-      - name: Tag & Push Image
-        run: |
-          docker tag $IMAGE_NAME:${{ github.sha }} \
-            ${{ secrets.ARTIFACTORY_URL }}/docker/$IMAGE_NAME:${{ github.sha }}
+      # ✅ Build the JAR first (THIS FIXES YOUR ERROR)
+      - name: Build with Maven
+        run: mvn clean package -DskipTests
 
-          docker push \
-            ${{ secrets.ARTIFACTORY_URL }}/docker/$IMAGE_NAME:${{ github.sha }}
+      # Optional: verify jar exists (good for debugging)
+      - name: List target folder
+        run: ls -la target
+
+      # ✅ Correct step structure
+      - name: Deploy container to registry
+        uses: slabstech/action-deploy-container-to-registry@v0.0.1
+        with:
+          docker-username: ${{ secrets.DOCKER_USERNAME }}
+          docker-password: ${{ secrets.DOCKER_PASSWORD }}
+          github-actor: ${{ github.actor }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          github-repository: ${{ github.repository }}
+          project-name: revive
+          service-name: server-dropwizard
+          dockerfile-path: ./docker/server/dropwizard/Dockerfile
 
   #################################
   # 5. DEPLOY TO EKS
