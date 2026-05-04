@@ -120,7 +120,7 @@ jobs:
   #################################
   deploy:
     runs-on: ubuntu-latest
-    needs: push-artifact
+    #needs: push-artifact
 
     steps:
       - name: Configure AWS Credentials
