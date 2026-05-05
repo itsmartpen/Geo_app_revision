@@ -84,7 +84,7 @@ jobs:
   # 4. PUSH TO DOCKERHUB
   #################################
   push_server_image :
-    name : Push Docker image to Docker Hub - server
+    name : Push to ECR & DockerHub
     runs-on : ubuntu-latest
     permissions:
       packages: write
@@ -114,6 +114,20 @@ jobs:
           project-name: geoapp
           service-name: server-dropwizard
           dockerfile-path: ./Dockerfile
+   
+      - name: upload to ECR
+        uses: appleboy/docker-ecr-action@master
+        with:
+         access_key: ${{ secrets.aws_access_key_id }}
+         secret_key: ${{ secrets.aws_secret_access_key }}
+         registry: ${{ secrets.registry }}
+         cache_from: ${{ secrets.cache }}
+         repo: api-sample
+         region: us-east-1
+         auto_tag: true
+         daemon_off: false
+         dockerfile: Dockerfile
+         context: example
 
   #################################
   # 5. DEPLOY TO EKS
