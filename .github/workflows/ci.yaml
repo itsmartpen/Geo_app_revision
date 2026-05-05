@@ -113,7 +113,7 @@ jobs:
           github-repository: ${{ github.repository }}
           project-name: geoapp
           service-name: server-dropwizard
-          dockerfile-path: /GEO-APP/Full_CICD_pipeline_code
+          dockerfile-path: ~/GEO-APP/Full_CICD_pipeline_code
 
   #################################
   # 5. DEPLOY TO EKS
