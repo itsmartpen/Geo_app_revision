@@ -122,7 +122,7 @@ jobs:
          secret_key: ${{ secrets.aws_secret_access_key }}
          registry: ${{ secrets.registry }}
          cache_from: ${{ secrets.cache }}
-         repo: api-sample
+         repo: geoapp_revision/geo-app
          region: us-east-1
          auto_tag: true
          daemon_off: false
