@@ -114,21 +114,9 @@ jobs:
           project-name: geoapp
           service-name: server-dropwizard
           dockerfile-path: ./Dockerfile
-   
-      - name: upload to ECR
-        uses: appleboy/docker-ecr-action@master
-        with:
-         access_key: ${{ secrets.aws_access_key_id }}
-         secret_key: ${{ secrets.aws_secret_access_key }}
-         registry: ${{ secrets.registry }}
-         cache_from: ${{ secrets.cache }}
-         repo: geoapp_revision/geo-app
-         region: us-east-1
-         auto_tag: true
-         daemon_off: false
-         dockerfile: Dockerfile
-         context: example
 
+
+         
   #################################
   # 5. DEPLOY TO EKS
   #################################
