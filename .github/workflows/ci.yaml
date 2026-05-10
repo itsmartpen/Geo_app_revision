@@ -81,10 +81,10 @@ jobs:
           severity: 'CRITICAL,HIGH'
 
   #################################
-  # 4. PUSH TO DOCKERHUB
+  # 4. PUSH TO REGISTRY
   #################################
   push_server_image :
-    name : Push to ECR & DockerHub
+    name : Push to Registry
     runs-on : ubuntu-latest
     permissions:
       packages: write
@@ -130,7 +130,7 @@ jobs:
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: $AWS_REGION
+          aws-region: us-east-1
 
       - name: Update kubeconfig
         run: |
