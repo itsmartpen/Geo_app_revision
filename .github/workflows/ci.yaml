@@ -135,8 +135,8 @@ jobs:
       - name: Update kubeconfig
         run: |
           aws eks update-kubeconfig \
-            --region $AWS_REGION \
-            --name $EKS_CLUSTER
+            --region us-east-1 \
+            --name funny-funk-mountain
 
       - name: Deploy to Kubernetes
         run: |
