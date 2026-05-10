@@ -138,7 +138,7 @@ jobs:
             --region $AWS_REGION \
             --name $EKS_CLUSTER
 
-      - name: Deploy to K8S
+      - name: Deploy to Kubernetes
         run: |
           kubectl set image deployment/my-app \
           my-app=${{ secrets.ARTIFACTORY_URL }}/docker/$IMAGE_NAME:${{ github.sha }}
