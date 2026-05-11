@@ -141,14 +141,6 @@ jobs:
             --region us-east-1 \
             --name funny-funk-mountain
 
-      - name: Debug kubeconfig
-        run: |
-           kubectl config current-context
-           kubectl cluster-info
-
-      - name: Test access
-        run: kubectl get nodes
-
       - name: Deploy to Kubernetes
         run: |
           kubectl set image deployment/my-app \
