@@ -38,7 +38,7 @@ jobs:
         run: mvn -B clean package
 
       - name: Trivy filesystem/dependency scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           scan-type: fs
           scan-ref: .
@@ -85,7 +85,7 @@ jobs:
         run: docker build -t app:${{ env.IMAGE_TAG }} .
 
       - name: Trivy image scan
-        uses: aquasecurity/trivy-action@0.28.0
+        uses: aquasecurity/trivy-action@v0.28.0
         with:
           image-ref: app:${{ env.IMAGE_TAG }}
           format: table
