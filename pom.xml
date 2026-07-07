@@ -91,17 +91,4 @@
 		</plugins>
 	</build>
 
-	<distributionManagement>
-    <repository>
-        <id>central</id>
-        <name>localhost-releases</name>
-        <url>http://172.234.203.14:8081/artifactory/geolocation</url>
-    </repository>
-    <snapshotRepository>
-        <id>snapshots</id>
-        <name>localhost-snapshots</name>
-        <url>http://172.234.203.14:8081/artifactory/geolocation</url>
-    </snapshotRepository>
-</distributionManagement>
-
 </project>
