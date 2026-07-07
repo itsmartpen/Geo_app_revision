@@ -15,8 +15,9 @@
 	<description>Demo project for Spring Boot</description>
 	<packaging>jar</packaging>
 	<properties>
-  		<sonar.organization>hermann90</sonar.organization>
+  		<sonar.organization>geo-app-revission</sonar.organization>
   		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  		<sonar.projectKey>geo-app-revission</sonar.projectKey>
 		<java.version>1.8</java.version>
 	</properties>
 
