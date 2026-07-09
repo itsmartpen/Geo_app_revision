@@ -4,8 +4,15 @@ metadata:
   name: {{ include "geoapp.fullname" . }}
   labels:
     {{- include "geoapp.labels" . | nindent 4 }}
+  {{- if eq .Values.service.type "LoadBalancer" }}
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+  {{- end }}
 spec:
   type: {{ .Values.service.type }}
+  {{- if eq .Values.service.type "LoadBalancer" }}
+  loadBalancerClass: eks.amazonaws.com/nlb
+  {{- end }}
   ports:
     - port: {{ .Values.service.port }}
       targetPort: http
