@@ -15,7 +15,7 @@ env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: geoapp
   EKS_CLUSTER_NAME: geoapp-cluster
-  K8S_NAMESPACE: dev
+  K8S_NAMESPACE: dev-geoapp
 
 jobs:
   # 1. Build, unit test, source scan, SonarQube analysis + quality gate
